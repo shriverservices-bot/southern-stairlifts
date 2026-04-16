@@ -45,18 +45,39 @@ const QUESTIONS = [
 export default function App() {
   const [currentStep, setCurrentStep] = useState(-1); // -1 is Welcome, 0-2 are Questions, 3 is Lead Capture, 4 is Success
   const [formData, setFormData] = useState<FormData>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSelectOption = (fieldId: string, value: string) => {
     setFormData(prev => ({ ...prev, [fieldId]: value }));
     setTimeout(() => setCurrentStep(prev => prev + 1), 300); // Small delay for visual feedback
   };
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("=== NEW LEAD CAPTURED ===");
-    console.table(formData);
-    console.log("==========================");
-    setCurrentStep(4);
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('https://formspree.io/f/xnjlppyz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      if (response.ok) {
+        setCurrentStep(4);
+      } else {
+        console.error("Form submission failed");
+        setCurrentStep(4);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setCurrentStep(4);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const slideVariants = {
@@ -231,9 +252,10 @@ export default function App() {
                     <div className="mt-auto pt-6">
                       <button 
                         type="submit"
-                        className="w-full bg-primary text-white font-semibold text-lg py-4 px-8 rounded-xl shadow-lg hover:bg-red-700 hover:scale-[1.02] active:scale-95 transition-all text-center"
+                        disabled={isSubmitting}
+                        className="w-full bg-primary text-white font-semibold text-lg py-4 px-8 rounded-xl shadow-lg hover:bg-red-700 hover:scale-[1.02] active:scale-95 transition-all text-center disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
                       >
-                        Get My Estimate
+                        {isSubmitting ? "Submitting..." : "Get My Estimate"}
                       </button>
                       <p className="text-center text-xs text-gray-400 mt-4">
                         By submitting, you agree to our Terms of Service and Privacy Policy. We will never sell your data.
