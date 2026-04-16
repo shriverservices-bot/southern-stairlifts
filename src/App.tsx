@@ -124,7 +124,12 @@ export default function App() {
             </button>
           )}
 
-          <div className="flex-1 p-8 sm:p-10 flex flex-col relative h-full">
+          {/* Logo */}
+          <div className="w-full flex justify-center pt-8 pb-2 mt-4">
+            <img src="/media/logo-1.webp" alt="Southern Stairlifts" className="h-16 w-auto object-contain" />
+          </div>
+
+          <div className="flex-1 px-8 pb-8 sm:px-10 sm:pb-10 flex flex-col relative h-full pt-4">
             <AnimatePresence mode="wait">
               
               {/* WELCOME SCREEN */}
@@ -136,9 +141,6 @@ export default function App() {
                   transition={{ duration: 0.3 }}
                   className="flex-1 flex flex-col justify-center items-center text-center space-y-6"
                 >
-                  <div className="bg-red-50 p-4 rounded-full mb-2">
-                    <ShieldCheck size={48} className="text-primary" />
-                  </div>
                   <h1 className="text-3xl font-bold tracking-tight text-secondary">
                     Is your home safe for aging in place?
                   </h1>
